@@ -246,10 +246,13 @@
                         <tbody>
                             {% for song_elem in queryResult %}
                             <tr>
-                                <td scope="row">{{song_elem.song}}</td>
+                                <td scope="row">
+                                    <div style="float:left; color:white; padding: 3px; background-color:#4883ff; border-radius: 3px; width: 60px;">{{song_elem.cover_original}}</div> 
+                                    <div>{{song_elem.song}}</div>
+                                </td>
                                 <!-- <td scope="row">{{song_elem.singer}}</td> -->
                                 <td scope="row">
-                                    <div class="tp">{{song_elem.song}}
+                                    <div class="tp">{{song_elem.singer}}
                                         <div class="card tptext" style="width: 300px; opacity: 0.9;">
                                             <div class="card-body">
                                               <div class="card-text" style="text-align: left;">

@@ -21,23 +21,10 @@ def execute_query_neo4j(uri, user, password, query_cmd):
 
 def query_neo4j(tx, query_cmd):
     result = tx.run(query_cmd)
+    # print(result.values())
     return [{'song':elem['song'], 'singer':elem['singer']} for elem in result]
-
-    for elem in result:
-        try:
-            print(elem['n'].get('name'))
-            # print(elem.data()['n']['name'])
-            # print(json.dumps(elem.data()))
-        except:
-            print( 'nooooo')
-    return result
     # return result.single()[0]
 
-# def print_friends(tx, name):
-#     query = ("MATCH (a:Person)-[:KNOWS]->(friend) WHERE a.name = $name "
-#              "RETURN friend.name ORDER BY friend.name")
-#     for record in tx.run(query, name=name):
-#         print(record["friend.name"])
 
 @app.route("/")
 def hello():
@@ -75,13 +62,16 @@ def songQuery():
         # cmd = f'MATCH (song:ns0__cover_song)-[:ns1__sung_by]->(singer:ns0__singer) WHERE song.rdfs__release_date <= date("2015-12-31") AND song.rdfs__release_date >= date("2015-01-01") RETURN song, singer LIMIT 20;'
     
     where_cmd = ' AND '.join(where_cmds)
-    cmd = f'MATCH (song)-[:ns1__sung_by]->(singer:ns0__singer) WHERE {where_cmd} RETURN song, singer LIMIT 10;'
+    cmd = f'MATCH (song)-[:ns1__sung_by]->(singer:ns0__singer) WHERE {where_cmd} RETURN song, singer ORDER BY song.title LIMIT 10;'
     print('='*40,f'cmd = {cmd}', '='*40)
     result_elems = execute_query_neo4j("bolt://localhost:7687", "neo4j", "dsci558", cmd)
    
     result = []
     for result_elem in result_elems:
         song_to_print = {}
+        song_to_print = {}
+        song_to_print['cover_original'] = 'cover' if 'ns0__cover_song' in result_elem['song'].labels else 'original'
+
         for target in ['singer', 'song']:
             elem = result_elem[target]
             for k, v in elem.items():
@@ -97,6 +87,7 @@ def songQuery():
         # Extract first element in list format
         if song_to_print['has_writers']: 
             song_to_print['has_writers'] = song_to_print['has_writers'].split(',')[0]
+        print('\n\nsinger == ', song_to_print['singer'])
         result.append(song_to_print)
     
     
