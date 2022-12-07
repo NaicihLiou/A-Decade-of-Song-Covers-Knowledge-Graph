@@ -22,7 +22,7 @@ def execute_query_neo4j(uri, user, password, query_cmd):
 def query_neo4j(tx, query_cmd):
     result = tx.run(query_cmd)
     # print(result.values())
-    return [{'song':elem['song'], 'singer':elem['singer']} for elem in result]
+    return [{'song':elem['song'], 'singer':elem['singer'], 'award':elem['award'], 'sim_singer':elem['sim_singer']} for elem in result]
     # return result.single()[0]
 
 
@@ -62,7 +62,13 @@ def songQuery():
         # cmd = f'MATCH (song:ns0__cover_song)-[:ns1__sung_by]->(singer:ns0__singer) WHERE song.rdfs__release_date <= date("2015-12-31") AND song.rdfs__release_date >= date("2015-01-01") RETURN song, singer LIMIT 20;'
     
     where_cmd = ' AND '.join(where_cmds)
-    cmd = f'MATCH (song)-[:ns1__sung_by]->(singer:ns0__singer) WHERE {where_cmd} RETURN song, singer ORDER BY song.title LIMIT 10;'
+    cmd = f"""
+    MATCH (song)-[:ns1__sung_by]->(singer:ns0__singer)-[:ns1__similar]->(sim_singer:ns0__singer)
+        WHERE {where_cmd}
+    OPTIONAL MATCH (song)-[:ns1__won]->(award)
+    RETURN song, singer, award, collect(sim_singer) AS sim_singer
+    ORDER BY song.rdfs__release_date.year DESC, song.title LIMIT 15;"""
+    # cmd = f'MATCH  (song)-[:ns1__sung_by]->(singer:ns0__singer) OPTIONAL MATCH (song)-[:ns1__won]->(award) WHERE {where_cmd} RETURN song, singer, award ORDER BY song.title LIMIT 10;'
     print('='*40,f'cmd = {cmd}', '='*40)
     result_elems = execute_query_neo4j("bolt://localhost:7687", "neo4j", "dsci558", cmd)
    
@@ -71,6 +77,17 @@ def songQuery():
         song_to_print = {}
         song_to_print = {}
         song_to_print['cover_original'] = 'cover' if 'ns0__cover_song' in result_elem['song'].labels else 'original'
+
+        print('award', result_elem['award'])
+        if result_elem['award']:
+            song_to_print['award'] = result_elem['award']['rdfs__title']
+
+        if result_elem['sim_singer']:
+            similar_singers = []
+            for elem in result_elem['sim_singer']:
+                similar_singers += [elem['rdfs__title']]
+            print('='*40, '\nsimilar_singers', similar_singers, '\n', '='*40)
+            song_to_print['sim_singer'] = sorted(similar_singers)[0]
 
         for target in ['singer', 'song']:
             elem = result_elem[target]
@@ -81,7 +98,7 @@ def songQuery():
                 if k == 'title': k = target
                 song_to_print[k] = v
 
-        for k in ['song','singer','has_writers','release_date','award','tag','birth_date','facebook','instagram','twitter','webpage','award']:
+        for k in ['song','singer','has_writers','release_date','award','tag','birth_date', 'birth_place', 'facebook','instagram','twitter','webpage','award']:
             song_to_print[k] = song_to_print.get(k, '')
         
         # Extract first element in list format

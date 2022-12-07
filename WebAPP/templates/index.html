@@ -101,7 +101,7 @@
             </div> 
             <div class="row">
                 <p style="font-size:20px; line-height:40px;">
-                    <b>A Decade of Song Covers</b> contains information about cover songs and the related information like original song and performers. It aims to help people explore music. Data resources include <a href="https://secondhandsongs.com/">Secondhandsongs</a>, <a href="https://www.last.fm/">Last.fm</a>, and <a>wikidata</a>. There are over 30,000 songs in the database. <br>               
+                    <b>A Decade of Song Covers</b> contains information about cover songs and the related information like original song and performers. It aims to help people explore music. Data resources include <a href="https://secondhandsongs.com/">Secondhandsongs</a>, <a href="https://www.last.fm/">Last.fm</a>, and <a href="https://www.wikidata.org/wiki/Q7366">wikidata</a>. There are over 30,000 songs in the database. <br>               
                 </p>
             </div>
             <!--             
@@ -231,11 +231,12 @@
         <div class="container">
             <div class="row">
                 <div class="bs-example col-md-12">
-                    <table class="table table-hover" style="margin:auto; width:90%; text-align:center;  font-size:15px;">
+                    <table class="table table-hover" style="margin:auto; text-align:center;  font-size:15px;">
                         <thead class="table-primary">
                             <tr >
+                                <th scope="col"></th>
                                 <th scope="col">Song</th>
-                                <th scope="col">Singer/Cover</th>
+                                <th scope="col">Singer</th>
                                 <th scope="col">Released Date</th>
                                 <th scope="col">Writer</th>
                                 <th scope="col">Award</th>
@@ -246,14 +247,16 @@
                         <tbody>
                             {% for song_elem in queryResult %}
                             <tr>
-                                <td scope="row">
-                                    <div style="float:left; color:white; padding: 3px; background-color:#4883ff; border-radius: 3px; width: 60px;">{{song_elem.cover_original}}</div> 
-                                    <div>{{song_elem.song}}</div>
+                                <td>
+                                    <div style="float:right; color:white; padding: 3px; background-color:#4883ff; border-radius: 3px; width: 60px;">
+                                        {{song_elem.cover_original}}
+                                    </div> 
                                 </td>
+                                <td scope="row">{{song_elem.song}}</td>
                                 <!-- <td scope="row">{{song_elem.singer}}</td> -->
                                 <td scope="row">
                                     <div class="tp">{{song_elem.singer}}
-                                        <div class="card tptext" style="width: 300px; opacity: 0.9;">
+                                        <div class="card tptext" style="width: 300px; opacity: 0.9; padding-bottom: 5px;">
                                             <div class="card-body">
                                               <div class="card-text" style="text-align: left;">
                                                 <ul>
@@ -262,8 +265,17 @@
                                                     <li><div style="color:white; padding: 3px; background-color:#4883ff; border-radius: 3px; width: fit-content;">{{song_elem.tag}}</div></li>
                                                     {% endif %} 
                                                     {% if song_elem.birth_date != "" %}
-                                                        <li><b>Brith Date</b>: {{song_elem.birth_date}}</li>
+                                                        <li><b>Birth Date</b>: {{song_elem.birth_date}}</li>
                                                     {% endif %} 
+
+                                                    {% if song_elem.birth_place != "" %}
+                                                        <li><b>Birth Place</b>: {{song_elem.birth_place}}</li>
+                                                    {% endif %} 
+
+                                                    {% if song_elemsim_singer != "" %}
+                                                        <li><b>Similar Singer</b>: {{song_elem.sim_singer}}</li>
+                                                    {% endif %}                                                     
+                                                    
                                                     <li class="row">
                                                         <a href="{{song_elem.facebook}}" class="sm-col-4" style="width: 30%;">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
