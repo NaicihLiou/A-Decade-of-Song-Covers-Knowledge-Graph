@@ -1,5 +1,8 @@
 # A-Decade-of-Song-Covers-Knowledge-Graph
 
+### Presentation Video
+[![Presentation Video](https://img.youtube.com/vi/lU1cMm5DUjg/0.jpg)](https://www.youtube.com/watch?v=lU1cMm5DUjg)
+
 ### 1. Scraping:
 - Tool(s): Scrapy and Selenium
 
@@ -19,4 +22,3 @@
 ### 6. WebApp Construction:
 - Tool(s): Flask and Neo4j
 
-[![Presentation Video](https://img.youtube.com/vi/lU1cMm5DUjg/0.jpg)](https://www.youtube.com/watch?v=lU1cMm5DUjg)
