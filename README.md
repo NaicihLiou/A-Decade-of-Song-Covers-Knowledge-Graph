@@ -15,6 +15,7 @@
 
 ### 4. Data Analysis:
 - Tool(s): Tableau
+- [Dashboard visualization](https://10az.online.tableau.com/t/duyen/views/NewWorkbook/Dashboard1)
 
 ### 5. KG Construction:
 - Tool(s): RDFLib and Neo4j
